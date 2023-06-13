@@ -12,7 +12,7 @@ function is_incomplete {
             fi
         done
     else
-        echo "`basename ${0}`: cannot access `realpath ${1}/valid_vpns.txt`: No such file or directory"
+        echo "$(basename $0): cannot access $(realpath ${1}/valid_vpns.txt): No such file or directory"
     fi
     return 1
 }
@@ -24,15 +24,13 @@ function missing_config_files {
 
 function iconfirm {
     while true; do 
-        read answer
+        read -r answer
         case $answer in
             [Yy]* )
                 return 0
-                break
                 ;;
             [Nn]* )
                 return 1
-                break 
                 ;;
             * )
                 echo "Please answer yes or no"
@@ -47,7 +45,6 @@ function smart_openvpn {
 
     if [[ $(curl -s --connect-timeout 10 -m 12 ifconfig.me) = $_PUBLIC_IP ]]; then
         openvpn $vpn > /dev/null &
-        vpnPID=$!
         sleep $timeout
         r=$(curl -s --connect-timeout 10 -m 12 ifconfig.me)
         if [[ $r = $_PUBLIC_IP ]] \
